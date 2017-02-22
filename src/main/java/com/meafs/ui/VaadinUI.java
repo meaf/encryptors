@@ -13,7 +13,7 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
 
 @SpringUI
-@Title("Payments inspector")
+@Title("Encryption methods")
 @Theme("valo")
 public class VaadinUI extends UI {
 

@@ -4,58 +4,25 @@ import com.meafs.ui.Labs.L1;
 import com.meafs.ui.Labs.L2;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.*;
-import com.vaadin.shared.Registration;
-import com.vaadin.shared.communication.SharedState;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
-import com.vaadin.ui.declarative.DesignContext;
-import elemental.json.JsonObject;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by meaf on 22.02.17.
  */
 public class HomePage extends VerticalLayout implements View{
 
-    HorizontalLayout upperSection = new HorizontalLayout();
-    HorizontalLayout innerUpperSection = new HorizontalLayout();
-    HorizontalSplitPanel lowerSection = new HorizontalSplitPanel();
-    VerticalLayout menuLayout = new VerticalLayout();
-    HorizontalLayout menuTitle = new HorizontalLayout();
-    VerticalLayout contentLayout = new VerticalLayout();
-    Label lblHeader;
-    Label lblMenu;
+    private HorizontalSplitPanel lowerSection = new HorizontalSplitPanel();
+    private VerticalLayout menuLayout = new VerticalLayout();
+    private HorizontalLayout menuTitle = new HorizontalLayout();
+    private VerticalLayout contentLayout = new VerticalLayout();
+    private Label lblMenu;
 
-    public HomePage() {
+    HomePage() {
 
         //UI Components
-
-        lblHeader = new Label("Labs");
-        lblHeader.addStyleName("colored");
-        lblHeader.addStyleName("h2");
-        lblHeader.setSizeUndefined();
-
         lblMenu = new Label("Select encryption");
         lblMenu.addStyleName("colored");
         lblMenu.addStyleName("h2");
-
-        //Sections
-        innerUpperSection.addComponent(lblHeader);
-        innerUpperSection.setSpacing(true);
-
-        upperSection.setSizeFull();
-        upperSection.addComponent(innerUpperSection);
-
-        upperSection.setMargin(new MarginInfo(false, true, false, false));
-        upperSection.setComponentAlignment(innerUpperSection, Alignment.TOP_RIGHT);
-        upperSection.addStyleName("borderBottom");
-        upperSection.setHeight(4, UNITS_EM);
 
         //menu section
         menuTitle.addComponent(lblMenu);
@@ -66,20 +33,18 @@ public class HomePage extends VerticalLayout implements View{
         lowerSection.addComponent(menuLayout);
         lowerSection.addComponent(contentLayout);
         contentLayout.setSizeFull();
+        contentLayout.setSpacing(false);
         lowerSection.setSizeFull();
         lowerSection.setSplitPosition(300, Unit.PIXELS);
 
-        addComponent(upperSection);
         addComponent(lowerSection);
-
         setSizeFull();
-
-        setExpandRatio(lowerSection,1);
+        setMargin(false);
 
 
     }
 
-    public void setMenuTitle() {
+    private void setMenuTitle() {
         //set the menu title
         menuTitle.addComponent(lblMenu);
         menuLayout.addComponent(menuTitle);
@@ -89,7 +54,7 @@ public class HomePage extends VerticalLayout implements View{
     }
 
 
-    public Component getComponent(String componentName) {
+    private Component getComponent(String componentName) {
         switch (componentName){
             case "L1":
                 return new L1();
@@ -98,7 +63,7 @@ public class HomePage extends VerticalLayout implements View{
         }
     }
 
-    public void addMenuOption(String caption, String componentName) {
+    private void addMenuOption(String caption, String componentName) {
         Button button = new Button(caption);
         button.setWidth("100%");
         button.setStyleName("borderless");
