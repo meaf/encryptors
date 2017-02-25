@@ -2,6 +2,7 @@ package com.meafs.ui.Labs;
 
 import com.meafs.Back.Charsets;
 import com.meafs.Back.Encryption;
+import com.meafs.Back.FileUtil;
 import com.meafs.Back.l1.Caesar;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -42,7 +43,7 @@ public class L1 extends VerticalLayout implements View {
         cbCharset = new ComboBox<>("", charsets);
         cbCharset.setItemCaptionGenerator(Charsets::getName);
         cbCharset.setPlaceholder("Select charset");
-//        cbCharset.setTextInputAllowed(false);
+        cbCharset.setTextInputAllowed(false);
         cbCharset.addValueChangeListener(e -> changeCharset());
 
         taInput = new TextArea();
@@ -147,11 +148,13 @@ public class L1 extends VerticalLayout implements View {
     }
 
     private void changeCharset() {
-        String charset = cbCharset.getValue().getCharset();
-        method.setCharset(charset); // TODO: merge enum class
-        keySlider.setMax(method.getCharset().length());
-        keySlider.setMin(-method.getCharset().length());
-        clear();
+        try {
+            String charset = cbCharset.getValue().getCharset();
+            method.setCharset(charset); // TODO: merge enum class
+            keySlider.setMax(method.getCharset().length());
+            keySlider.setMin(-method.getCharset().length());
+            clear();
+        }catch (NullPointerException e){}
     }
 
     private void encrypt(String caption) {
@@ -186,15 +189,19 @@ public class L1 extends VerticalLayout implements View {
     }
 
     private void read(){
-        String str = Encryption.readFromFile(tfFileName.getValue());
-        taInput.setValue(str);
+        try {
+            String str = FileUtil.readFromFile(tfFileName.getValue());
+            taInput.setValue(str);
+        }catch (Exception e){
+            Notification.show(e.getLocalizedMessage());
+        }
     }
 
     private void clear(){
         taInput.clear();
         taOutput.clear();
         taProcessed.clear();
-        keySlider.clear();
+        keySlider.setValue(0D);
     }
 
     @Override

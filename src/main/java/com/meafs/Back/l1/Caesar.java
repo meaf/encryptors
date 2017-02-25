@@ -22,7 +22,8 @@ public class Caesar implements Encryption{
     }
 
     @Override
-    public String encrypt(String str, int key) throws IllegalArgumentException{
+    public String encrypt(String str, int... keys) throws IllegalArgumentException{
+        int key = keys[0];
         Encryption.validation(str, charset.getCharset());
         char[] c = charset.toCharArray();
         char[] enc = new char[str.length()];
@@ -39,15 +40,14 @@ public class Caesar implements Encryption{
     }
 
     @Override
-    public String decrypt(String str, int key) throws IllegalArgumentException{
-        Encryption.validation(str, charset.getCharset());
+    public String decrypt(String str, int... keys) throws IllegalArgumentException{
+        int key = keys[0];
         String decStr = encrypt(str, -key);
         return decStr;
     }
 
     @Override
     public String brute (String str) throws IllegalArgumentException {
-        Encryption.validation(str, charset.getCharset());
         StringBuilder bruteRes = new StringBuilder();
         for (int i = 0; i < charset.length(); i++) {
             bruteRes.append("\n trying key " + i + ":\n");
