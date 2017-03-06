@@ -1,13 +1,25 @@
 package com.meafs.Back;
 
+import java.io.Serializable;
+
 /**
  * Created by meaf on 22.02.17.
  */
-public class Charset {
-    private String charset;
+public class Charset implements Serializable {
+    private String charset, name;
+
+    public Charset(){};
 
     public Charset(String charset) {
         this.charset = charset;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCharset() {
@@ -23,7 +35,7 @@ public class Charset {
     }
 
     public void merge(String anotherCharset){
-        charset.concat(anotherCharset);
+        charset = charset.concat(anotherCharset);
     }
 
     public int indexOf(char character){

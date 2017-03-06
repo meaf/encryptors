@@ -1,8 +1,6 @@
 package com.meafs.ui.Labs;
 
-import com.meafs.Back.Charsets;
-import com.meafs.Back.Encryption;
-import com.meafs.Back.FileUtil;
+import com.meafs.Back.*;
 import com.meafs.Back.l1.Caesar;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -17,7 +15,8 @@ import java.util.*;
  */
 
 public class L1 extends VerticalLayout implements View {
-    private Caesar method = new Caesar(Charsets.ENG.getCharset());
+    private CharsetStore charsetStore;
+    private Caesar method;
     private VerticalLayout page, morphChain, options;
     private HorizontalLayout controls, decryptOpt;
     private Label lblHeader;
@@ -25,23 +24,24 @@ public class L1 extends VerticalLayout implements View {
     private TextArea taInput, taProcessed, taOutput;
     private TextField tfFileName;
     private Slider keySlider;
-    private ComboBox<Charsets> cbCharset;
-    private Set<Charsets> charsets;
+    private ComboBox<Charset> cbCharset;
+    private LinkedList<Charset> charsetSet;
+    private int interval;
 
     public L1() {
-        int interval;
-        interval = method.getCharset().length();
+
 
         lblHeader = new Label("Caesar cipher");
         lblHeader.addStyleName("h1");
         lblHeader.addStyleName("colored");
         lblHeader.setSizeFull();
 
+        charsetSet = CharsetProvider.getInstance().getAll();
+        method = new Caesar(charsetSet.getFirst().getCharset());
+        interval = method.getCharset().length();
 
-        charsets = EnumSet.allOf(Charsets.class);
-
-        cbCharset = new ComboBox<>("", charsets);
-        cbCharset.setItemCaptionGenerator(Charsets::getName);
+        cbCharset = new ComboBox<>("", charsetSet);
+        cbCharset.setItemCaptionGenerator(Charset::getName);
         cbCharset.setPlaceholder("Select charset");
         cbCharset.setTextInputAllowed(false);
         cbCharset.addValueChangeListener(e -> changeCharset());
@@ -149,12 +149,15 @@ public class L1 extends VerticalLayout implements View {
 
     private void changeCharset() {
         try {
+            interval = method.getCharset().length();
             String charset = cbCharset.getValue().getCharset();
             method.setCharset(charset); // TODO: merge enum class
-            keySlider.setMax(method.getCharset().length());
-            keySlider.setMin(-method.getCharset().length());
+            keySlider.setMax(interval);
+            keySlider.setMin(interval);
             clear();
-        }catch (NullPointerException e){}
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     private void encrypt(String caption) {

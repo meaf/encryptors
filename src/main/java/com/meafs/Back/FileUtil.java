@@ -17,7 +17,7 @@ public final class FileUtil {
             );
             String s;
             try{while (((s = in.readLine()) != null)) {
-                sb.append(s);
+                sb.append(s).append('\n');
             }
             in.close();
             } catch (IOException e){
