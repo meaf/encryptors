@@ -2,6 +2,7 @@ package com.meafs.ui;
 
 import com.meafs.ui.Labs.L1;
 import com.meafs.ui.Labs.L2;
+import com.meafs.ui.Labs.L3;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
@@ -56,10 +57,12 @@ public class HomePage extends VerticalLayout implements View{
 
     private Component getComponent(String componentName) {
         switch (componentName){
-            case "L1":
-                return new L1();
-            default:
+            case "L2":
                 return new L2();
+            case "L3":
+                return new L3();
+            default:
+                return new L1();
         }
     }
 
@@ -84,6 +87,7 @@ public class HomePage extends VerticalLayout implements View{
         {
             this.addMenuOption("Caesar cipher (lab 1)", "L1");
             this.addMenuOption("Trithemius cipher (lab 2)", "L2");
+            this.addMenuOption("Gamma method (lab 3)", "L3");
         }
     }
 }

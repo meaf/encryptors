@@ -9,8 +9,8 @@ import com.meafs.Back.Encryption;
 public class Caesar implements Encryption{
     private Charset charset;
 
-    public Caesar(String charset) {
-        this.charset = new Charset(charset);
+    public Caesar(Charset charset) {
+        this.charset = charset;
     }
 
     public Charset getCharset() {
@@ -23,27 +23,24 @@ public class Caesar implements Encryption{
 
     @Override
     public String encrypt(String str, int... keys) throws IllegalArgumentException{
+        Encryption.validation(str, charset.getCharset());
         int key = keys[0];
         Encryption.validation(str, charset.getCharset());
         char[] c = charset.toCharArray();
         char[] enc = new char[str.length()];
 
-
         for (int i = 0; i<str.length(); i++){
-            int pos = charset.indexOf(str.charAt(i));
+            int pos = charset.sameCharPosition(str, i);
             enc[i]=c[(pos+key+c.length)%c.length];
         }
 
-        String encStr = new String(enc);
-
-        return encStr;
+        return new String(enc);
     }
 
     @Override
     public String decrypt(String str, int... keys) throws IllegalArgumentException{
         int key = keys[0];
-        String decStr = encrypt(str, -key);
-        return decStr;
+        return encrypt(str, -key);
     }
 
     @Override

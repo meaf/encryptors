@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Charset implements Serializable {
     private String charset, name;
 
-    public Charset(){};
+    public Charset(){}
 
     public Charset(String charset) {
         this.charset = charset;
@@ -48,5 +48,14 @@ public class Charset implements Serializable {
 
     public char[] toCharArray(){
         return charset.toCharArray();
+    }
+
+    @Override
+    public String toString(){
+        return (name +": \'"+charset+"\'");
+    }
+
+    public int sameCharPosition(String str, int index){
+        return indexOf(str.charAt(index));
     }
 }

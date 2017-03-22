@@ -15,7 +15,6 @@ import java.util.*;
  */
 
 public class L1 extends VerticalLayout implements View {
-    private CharsetStore charsetStore;
     private Caesar method;
     private VerticalLayout page, morphChain, options;
     private HorizontalLayout controls, decryptOpt;
@@ -24,8 +23,8 @@ public class L1 extends VerticalLayout implements View {
     private TextArea taInput, taProcessed, taOutput;
     private TextField tfFileName;
     private Slider keySlider;
-    private ComboBox<Charset> cbCharset;
-    private LinkedList<Charset> charsetSet;
+    private ComboBox<Charset> comboCharset;
+    private LinkedList<Charset> charsetList;
     private int interval;
 
     public L1() {
@@ -36,15 +35,16 @@ public class L1 extends VerticalLayout implements View {
         lblHeader.addStyleName("colored");
         lblHeader.setSizeFull();
 
-        charsetSet = CharsetProvider.getInstance().getAll();
-        method = new Caesar(charsetSet.getFirst().getCharset());
+        charsetList = CharsetProvider.getInstance().getAll();
+        method = new Caesar(charsetList.getLast());
         interval = method.getCharset().length();
 
-        cbCharset = new ComboBox<>("", charsetSet);
-        cbCharset.setItemCaptionGenerator(Charset::getName);
-        cbCharset.setPlaceholder("Select charset");
-        cbCharset.setTextInputAllowed(false);
-        cbCharset.addValueChangeListener(e -> changeCharset());
+        comboCharset = new ComboBox<>("", charsetList);
+        comboCharset.setItemCaptionGenerator(Charset::getName);
+        comboCharset.setPlaceholder("Select charset");
+        comboCharset.setTextInputAllowed(false);
+        comboCharset.setValue(charsetList.getLast());
+        comboCharset.addValueChangeListener(e -> changeCharset());
 
         taInput = new TextArea();
         taInput.setWidth(100, Unit.PERCENTAGE);
@@ -113,7 +113,7 @@ public class L1 extends VerticalLayout implements View {
 
 
 
-        options = new VerticalLayout(cbCharset, btnReadFromFile, tfFileName, btnClear);
+        options = new VerticalLayout(comboCharset, btnReadFromFile, tfFileName, btnClear);
         options.setSpacing(false);
         options.setSizeFull();
 
@@ -150,10 +150,10 @@ public class L1 extends VerticalLayout implements View {
     private void changeCharset() {
         try {
             interval = method.getCharset().length();
-            String charset = cbCharset.getValue().getCharset();
-            method.setCharset(charset); // TODO: merge enum class
+            String charset = comboCharset.getValue().getCharset();
+            method.setCharset(charset);
             keySlider.setMax(interval);
-            keySlider.setMin(interval);
+            keySlider.setMin(-interval);
             clear();
         }catch (NullPointerException e){
             e.printStackTrace();

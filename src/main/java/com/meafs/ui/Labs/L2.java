@@ -24,7 +24,7 @@ public class L2 extends VerticalLayout implements View {
     private TextArea taInput, taProcessed, taOutput;
     private TextField tfFileName, tfPassPhrase, Akey, Bkey, Ckey;
     private ComboBox<Charset> comboCharset;
-    private LinkedList<Charset> charsetSet;
+    private LinkedList<Charset> charsetList;
     private CheckBox cbA, cbB, cbC, cbPP;
     private Integer temp;
 
@@ -36,13 +36,14 @@ public class L2 extends VerticalLayout implements View {
         lblFunction = new Label();
         lblFunction.addStyleName("colored");
 
-        charsetSet = CharsetProvider.getInstance().getAll();
-        method = new Trithemius(charsetSet.getFirst().getCharset());
+        charsetList = CharsetProvider.getInstance().getAll();
+        method = new Trithemius(charsetList.getLast());
 
-        comboCharset = new ComboBox<>("", charsetSet);
+        comboCharset = new ComboBox<>("", charsetList);
         comboCharset.setItemCaptionGenerator(Charset::getName);
         comboCharset.setPlaceholder("Select charset");
         comboCharset.setTextInputAllowed(false);
+        comboCharset.setValue(charsetList.getLast());
         comboCharset.addValueChangeListener(e -> changeCharset());
 
 
