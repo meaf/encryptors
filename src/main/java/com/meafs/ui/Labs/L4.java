@@ -16,13 +16,11 @@ import java.util.*;
 public class L4 extends VerticalLayout implements View {
     private Stirl method;
     private VerticalLayout page, options, encryption;
-    private HorizontalLayout upperOptions, selectOptions, operations;
+    private HorizontalLayout selectOptions, operations, seedField;
     private Button btnEncrypt, btnDecrypt, btnReadFromFile, btnReadText, btnClear, btnGenerateKey;
     private Label lblHeader;
     private TextArea taInput;
     private TextField tfFileName, tfPassPhrase;
-    private ComboBox<Charset> comboCharset;
-    private LinkedList<Charset> charsetList;
     private int seed;
 
 
@@ -31,16 +29,7 @@ public class L4 extends VerticalLayout implements View {
         lblHeader.addStyleName("h1");
         lblHeader.addStyleName("colored");
 
-        charsetList = CharsetProvider.getInstance().getAll();
-        method = new Stirl(charsetList.getLast());
-
-        comboCharset = new ComboBox<>("", charsetList);
-        comboCharset.setWidth(100, Unit.PERCENTAGE);
-        comboCharset.setItemCaptionGenerator(Charset::getName);
-        comboCharset.setPlaceholder("Select charset");
-        comboCharset.setTextInputAllowed(false);
-        comboCharset.addValueChangeListener(e -> changeCharset());
-        comboCharset.setValue(charsetList.getLast());
+        method = new Stirl();
 
 
 
@@ -102,18 +91,14 @@ public class L4 extends VerticalLayout implements View {
         );
         btnDecrypt.setWidth(100, Unit.PERCENTAGE);
 
-        ///       alignment setup
 
-        upperOptions = new HorizontalLayout(comboCharset, btnGenerateKey);
-        upperOptions.setComponentAlignment(btnGenerateKey, Alignment.BOTTOM_RIGHT);
-        upperOptions.setSizeFull();
-        upperOptions.setSpacing(false);
+        ///       alignment setup
 
         selectOptions = new HorizontalLayout(btnReadFromFile, btnReadText);
         selectOptions.setSizeFull();
         selectOptions.setSpacing(false);
 
-        options = new VerticalLayout(upperOptions, selectOptions, tfFileName, btnClear);
+        options = new VerticalLayout(selectOptions, tfFileName, btnClear);
         options.setSpacing(false);
         options.setSizeFull();
 
@@ -121,7 +106,13 @@ public class L4 extends VerticalLayout implements View {
 
         encryption = new VerticalLayout(taInput, operations, tfPassPhrase);
 
-        page = new VerticalLayout(lblHeader, options, encryption);
+        seedField = new HorizontalLayout(btnGenerateKey, tfPassPhrase);
+        seedField.setExpandRatio(btnGenerateKey, 1);
+        seedField.setExpandRatio(tfPassPhrase, 2);
+        seedField.setSizeFull();
+        seedField.setMargin(false);
+
+        page = new VerticalLayout(lblHeader, options, encryption, seedField);
         page.setComponentAlignment(lblHeader, Alignment.TOP_CENTER);
         page.setSpacing(false);
         page.setMargin(false);
@@ -143,7 +134,7 @@ public class L4 extends VerticalLayout implements View {
         }
     }
 
-    private boolean decrypt() {
+    private void decrypt() {
         try{
             String result;
             result = method.decrypt(taInput.getValue(), seed);
@@ -151,18 +142,6 @@ public class L4 extends VerticalLayout implements View {
         }catch (IllegalArgumentException e) {
             Notification error = new Notification("Invalid input", e.getLocalizedMessage(), Notification.Type.HUMANIZED_MESSAGE);
             error.show(Page.getCurrent());
-        }catch (StringIndexOutOfBoundsException e){
-            return false;
-        }
-        return true;
-    }
-
-    private void changeCharset() {
-        try {
-            Charset charset = comboCharset.getValue();
-            method.setCharset(charset);
-        } catch (NullPointerException e){
-            e.printStackTrace();
         }
     }
 
