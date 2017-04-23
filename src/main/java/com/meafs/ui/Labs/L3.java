@@ -53,17 +53,17 @@ public class L3 extends VerticalLayout implements View {
 
         taInput = new TextArea();
         taInput.setWidth(100, Unit.PERCENTAGE);
-        taInput.setHeight(25, Unit.PERCENTAGE);
+        taInput.setHeight(30, Unit.PERCENTAGE);
         taInput.setPlaceholder("Enter message to decrypt");
 
         taProcessed = new TextArea();
         taProcessed.setWidth(100, Unit.PERCENTAGE);
-        taProcessed.setHeight(25, Unit.PERCENTAGE);
+        taProcessed.setHeight(30, Unit.PERCENTAGE);
         taProcessed.setPlaceholder("Encrypted message");
 
         taOutput = new TextArea();
         taOutput.setWidth(100, Unit.PERCENTAGE);
-        taOutput.setHeight(25, Unit.PERCENTAGE);
+        taOutput.setHeight(30, Unit.PERCENTAGE);
         taOutput.setPlaceholder("Decrypted message");
         taOutput.setReadOnly(true);
 
@@ -97,13 +97,14 @@ public class L3 extends VerticalLayout implements View {
         btnEncrypt.addStyleName("borderless");
         btnEncrypt.addClickListener(e -> {
             int count = 0;
-            while (!encrypt() & count < 50000) {
-                System.out.println(tfPassPhrase.getValue());
+            while (!encrypt() & count < 100000) {
+//                System.out.println(tfPassPhrase.getValue());
                 setRandomKey();
                 System.out.println("retrying x" + (++count));
             }
             if(count >= 50000){
-                Notification.show("try using shorter string");
+                System.out.println("unfortunate...");
+                Notification.show("Try using shorter string for faster valid key generation");
             }
         });
 
@@ -128,12 +129,15 @@ public class L3 extends VerticalLayout implements View {
 
         morphChain = new VerticalLayout(options, taInput, btnEncrypt, taProcessed, btnDecrypt, taOutput);
         morphChain.setSizeFull();
+        morphChain.setMargin(false);
         morphChain.setSpacing(false);
 
         controls = new HorizontalLayout(morphChain);
-        controls.setComponentAlignment(morphChain, Alignment.MIDDLE_LEFT);
-        controls.setExpandRatio(morphChain, 1);
+//        controls.setComponentAlignment(morphChain, Alignment.MIDDLE_LEFT);
+//        controls.setExpandRatio(morphChain, 1);
         controls.setSizeFull();
+        controls.setMargin(false);
+        controls.setSpacing(false);
 
         ppOption = new HorizontalLayout(tfPassPhrase);
         ppOption.setExpandRatio(tfPassPhrase, 1);
@@ -212,7 +216,6 @@ public class L3 extends VerticalLayout implements View {
     }
 
     private void setRandomKey(){
-        System.out.println("cs len"+method.getCharset().length());
         Random rand = new Random();
         StringBuilder sb = new StringBuilder();
         randKeyList.clear();
@@ -234,4 +237,4 @@ public class L3 extends VerticalLayout implements View {
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
     }
 
-}
+}//TODO: DD84 quant cryps

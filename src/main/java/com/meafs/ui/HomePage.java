@@ -1,11 +1,9 @@
 package com.meafs.ui;
 
-import com.meafs.ui.Labs.L1;
-import com.meafs.ui.Labs.L2;
-import com.meafs.ui.Labs.L3;
+import com.vaadin.ui.*;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.*;
+import com.meafs.ui.Labs.*;
 
 /**
  * Created by meaf on 22.02.17.
@@ -61,6 +59,8 @@ public class HomePage extends VerticalLayout implements View{
                 return new L2();
             case "L3":
                 return new L3();
+            case "L4":
+                return new L4();
             default:
                 return new L1();
         }
@@ -88,7 +88,7 @@ public class HomePage extends VerticalLayout implements View{
             this.addMenuOption("Caesar cipher (lab 1)", "L1");
             this.addMenuOption("Trithemius cipher (lab 2)", "L2");
             this.addMenuOption("Gamma method (lab 3)", "L3");
+            this.addMenuOption("Literature fragment method (lab 4)", "L4");
         }
     }
 }
-
