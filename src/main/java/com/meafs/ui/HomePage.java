@@ -27,7 +27,9 @@ public class HomePage extends VerticalLayout implements View{
         menuTitle.addComponent(lblMenu);
         menuLayout.addComponent(menuTitle);
         menuLayout.setWidth(100, Unit.PERCENTAGE);
+        menuLayout.setHeight(100, Unit.PIXELS);
         menuLayout.setComponentAlignment(menuTitle, Alignment.MIDDLE_CENTER);
+
 
         lowerSection.addComponent(menuLayout);
         lowerSection.addComponent(contentLayout);
@@ -88,7 +90,8 @@ public class HomePage extends VerticalLayout implements View{
             this.addMenuOption("Caesar cipher (lab 1)", "L1");
             this.addMenuOption("Trithemius cipher (lab 2)", "L2");
             this.addMenuOption("Gamma method (lab 3)", "L3");
-            this.addMenuOption("Literature fragment method (lab 4)", "L4");
+            this.addMenuOption("Literature method (lab 4)", "L4");
+            menuLayout.setHeight((menuLayout.getComponentCount()+1)*45, Unit.PIXELS);
         }
     }
 }
