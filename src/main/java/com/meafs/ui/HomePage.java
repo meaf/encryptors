@@ -63,6 +63,8 @@ public class HomePage extends VerticalLayout implements View{
                 return new L3();
             case "L4":
                 return new L4();
+            case "L5":
+                return new L5();
             default:
                 return new L1();
         }
@@ -91,6 +93,7 @@ public class HomePage extends VerticalLayout implements View{
             this.addMenuOption("Trithemius cipher (lab 2)", "L2");
             this.addMenuOption("Gamma method (lab 3)", "L3");
             this.addMenuOption("Literature method (lab 4)", "L4");
+            this.addMenuOption("DES (lab 5)", "L5");
             menuLayout.setHeight((menuLayout.getComponentCount()+1)*45, Unit.PIXELS);
         }
     }

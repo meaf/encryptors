@@ -1,36 +1,41 @@
 package com.meafs.ui.Labs;
 
 import com.meafs.Back.*;
-import com.meafs.Back.l4.Stirl;
+import com.meafs.Back.l5.DES;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.validation.constraints.Null;
 import java.util.*;
 
 /**
  * Created by meaf on 21.12.16.
  */
 
-public class L4 extends VerticalLayout implements View {
-    private Stirl method;
+public class L5 extends VerticalLayout implements View {
+    private DES method;
     private VerticalLayout page, options, encryption;
-    private HorizontalLayout selectOptions, operations, seedField;
-    private Button btnEncrypt, btnDecrypt, btnReadFromFile, btnReadText, btnClear, btnGenerateKey;
+    private HorizontalLayout operations, keyField;
+    private Button btnEncrypt, btnDecrypt, btnReadFromFile, btnClear, btnGenerateKey;
     private Label lblHeader;
     private TextArea taInput;
-    private TextField tfFileName, tfPassPhrase;
-    private int seed;
+    private TextField tfFileName, tfSecretKey;
+    private KeyGenerator keygen;
+    private SecretKey desKey;
 
-
-    public L4() {
-        lblHeader = new Label("Literature method");
+    public L5() {
+        lblHeader = new Label("DES encryption");
         lblHeader.addStyleName("h1");
         lblHeader.addStyleName("colored");
-
-        method = new Stirl();
-
+        try {
+            keygen = KeyGenerator.getInstance("DES");
+            desKey = keygen.generateKey();
+            method = new DES(desKey);
+        }catch (Exception e){e.printStackTrace();
+            return;}
 
 
         btnGenerateKey = new Button("Generate Key");
@@ -48,25 +53,17 @@ public class L4 extends VerticalLayout implements View {
         tfFileName.setPlaceholder("File name");
         tfFileName.setWidth(100, Unit.PERCENTAGE);
 
-        tfPassPhrase = new TextField();
-        tfPassPhrase.setPlaceholder("Secret keys");
-        tfPassPhrase.setWidth(100, Unit.PERCENTAGE);
-        tfPassPhrase.setReadOnly(true);
-        tfPassPhrase.addContextClickListener(e -> Notification.show("asd"));
+        tfSecretKey = new TextField();
+        tfSecretKey.setPlaceholder("Secret keys");
+        tfSecretKey.setWidth(100, Unit.PERCENTAGE);
+        tfSecretKey.setReadOnly(true);
+        tfSecretKey.setValue(Arrays.toString(desKey.getEncoded()));
 
         btnReadFromFile = new Button("Select message:");
         btnReadFromFile.setWidth(100, Unit.PERCENTAGE);
         btnReadFromFile.addClickListener(e ->
                 readMessage()
         );
-
-        btnReadText = new Button("Select text:");
-        btnReadText.setWidth(100, Unit.PERCENTAGE);
-        btnReadText.addClickListener(e ->
-                readText()
-        );
-
-
 
         btnClear = new Button("Clear All");
         btnClear.setWidth(100, Unit.PERCENTAGE);
@@ -79,7 +76,7 @@ public class L4 extends VerticalLayout implements View {
         btnEncrypt.addStyleName("tiny");
         btnEncrypt.addStyleName("borderless");
         btnEncrypt.addClickListener(e ->
-            encrypt()
+                encrypt()
         );
 
         btnDecrypt = new Button("Decrypt");
@@ -93,26 +90,21 @@ public class L4 extends VerticalLayout implements View {
 
 
         ///       alignment setup
-
-        selectOptions = new HorizontalLayout(btnReadFromFile, btnReadText);
-        selectOptions.setSizeFull();
-        selectOptions.setSpacing(false);
-
-        options = new VerticalLayout(selectOptions, tfFileName, btnClear);
+        options = new VerticalLayout(btnReadFromFile, tfFileName, btnClear);
         options.setSpacing(false);
         options.setSizeFull();
 
         operations = new HorizontalLayout(btnEncrypt, btnDecrypt);
 
-        encryption = new VerticalLayout(taInput, operations, tfPassPhrase);
+        encryption = new VerticalLayout(taInput, operations, tfSecretKey);
 
-        seedField = new HorizontalLayout(btnGenerateKey, tfPassPhrase);
-        seedField.setExpandRatio(btnGenerateKey, 1);
-        seedField.setExpandRatio(tfPassPhrase, 2);
-        seedField.setSizeFull();
-        seedField.setMargin(false);
+        keyField = new HorizontalLayout(btnGenerateKey, tfSecretKey);
+        keyField.setExpandRatio(btnGenerateKey, 1);
+        keyField.setExpandRatio(tfSecretKey, 2);
+        keyField.setSizeFull();
+        keyField.setMargin(false);
 
-        page = new VerticalLayout(lblHeader, options, encryption, seedField);
+        page = new VerticalLayout(lblHeader, options, encryption, keyField);
         page.setComponentAlignment(lblHeader, Alignment.TOP_CENTER);
         page.setSpacing(false);
         page.setMargin(false);
@@ -125,24 +117,20 @@ public class L4 extends VerticalLayout implements View {
     private void encrypt() {
         try {
             String result;
-
-            result = method.encrypt(taInput.getValue(), Integer.parseInt(tfPassPhrase.getValue()));
+            result = method.encrypt(taInput.getValue(), null);
             taInput.setValue(result);
-        } catch (IllegalArgumentException e) {
-            Notification error = new Notification("Invalid input", e.getLocalizedMessage(), Notification.Type.HUMANIZED_MESSAGE);
-            error.show(Page.getCurrent());
-        }
+        } catch (IllegalArgumentException e) {e.printStackTrace();}
     }
 
     private void decrypt() {
         try{
             String result;
-            result = method.decrypt(taInput.getValue(), Integer.parseInt(tfPassPhrase.getValue()));
+            result = method.decrypt(taInput.getValue(), null);
             taInput.setValue(result);
-        }catch (IllegalArgumentException e) {
-            Notification error = new Notification("Invalid input", e.getLocalizedMessage(), Notification.Type.HUMANIZED_MESSAGE);
-            error.show(Page.getCurrent());
         }
+//        catch (IllegalArgumentException e) {e.printStackTrace();}
+        catch (Exception e){
+            Notification.show("Error decrypting the message", "either message or key is invalid", Notification.Type.HUMANIZED_MESSAGE);}
     }
 
     private void readMessage(){
@@ -154,27 +142,19 @@ public class L4 extends VerticalLayout implements View {
         }
     }
 
-    private void readText(){
-        try {
-            String textStr = FileUtil.readFromFile(tfFileName.getValue());
-            method.setText(textStr);
-        }catch (Exception e){
-            Notification.show(e.getLocalizedMessage());
-        }
-    }
 
     private void clear(){
         taInput.clear();
         tfFileName.clear();
-        tfPassPhrase.clear();
+        tfSecretKey.clear();
     }
 
     private void setRandomKey(){
-        Random random = new Random();
-        this.seed = random.nextInt();
-        tfPassPhrase.setValue(""+ seed);
+        desKey = keygen.generateKey();
+        method.setKey(desKey);
+        tfSecretKey.setValue(Arrays.toString(desKey.getEncoded()));
     }
-    
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
     }

@@ -21,9 +21,6 @@ public class VaadinUI extends UI {
     @Override
     protected void init(VaadinRequest request) {
         Navigator navigator = new Navigator(this, this);
-
-        navigator.addView("Caesar", new L1());
-        navigator.addView("Trithemius", new L2());
         navigator.addView("Home", new HomePage());
 
         navigator.navigateTo("Home");
